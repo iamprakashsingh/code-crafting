@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { RotateCcwIcon, ShareIcon, TypeIcon } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
-import {EditorPanelSkeleton}  from "./EditorPanelSkeleton";
+import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
 import ShareSnippetDialog from "./SharedSnippetDialog";
+import type * as monaco from "monaco-editor";
 
 function EditorPanel() {
   const clerk = useClerk();
@@ -21,7 +22,9 @@ function EditorPanel() {
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
-    if (editor) editor.setValue(newCode);
+    if (editor) {
+      (editor as monaco.editor.IStandaloneCodeEditor).setValue(newCode);
+    }
   }, [language, editor]);
 
   useEffect(() => {
@@ -31,7 +34,9 @@ function EditorPanel() {
 
   const handleRefresh = () => {
     const defaultCode = LANGUAGE_CONFIG[language].defaultCode;
-    if (editor) editor.setValue(defaultCode);
+    if (editor) {
+      (editor as monaco.editor.IStandaloneCodeEditor).setValue(defaultCode);
+    }
     localStorage.removeItem(`editor-code-${language}`);
   };
 
@@ -145,4 +150,5 @@ function EditorPanel() {
     </div>
   );
 }
+
 export default EditorPanel;
